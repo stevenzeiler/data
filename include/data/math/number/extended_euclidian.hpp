@@ -34,7 +34,7 @@ namespace data::math {
                 }
                 
             private:
-                extended() : GCD{}, BezoutS{}, BezoutT{} {}
+                extended() : GCD{0}, BezoutS{0}, BezoutT{1} {}
                 
                 extended(const Z gcd, const Z s, const Z t) : GCD{gcd}, BezoutS{s}, BezoutT{t} {} 
                 
@@ -44,15 +44,17 @@ namespace data::math {
                     Z BezoutT;
                     
                     sequence operator/(const sequence& s) const {
-                        auto div = divide_integer(Div.Remainder, s.Div.Remainder);
+                        auto div = divide_integer(Div.Remainder, nonzero(s.Div.Remainder));
                         return {div, BezoutS - div.Quotient * s.BezoutS, BezoutT - div.Quotient * s.BezoutT};
                     }
                 };
                 
+                extended(const sequence& x) : GCD{x.Div.Remainder}, BezoutS{x.BezoutS}, BezoutT{x.BezoutT} {}
+                
                 // must provide prev.Div.Remainder > current.Div.Remainder.
-                static extended loop(const sequence prev, const sequence current) {
+                static extended loop(const sequence prev, const sequence& current) {
                     sequence next = prev / current;
-                    if (next.Div.Remainder == 0) return extended{current.Div.Remainder, current.BezoutS, current.BezoutT};
+                    if (next.Div.Remainder == 0) return extended{current};
                     return loop(current, next);
                 }
                 
@@ -63,11 +65,12 @@ namespace data::math {
                 
             public:
                 static extended algorithm(const Z a, const Z b) {
+                    if (a == 0 || b == 0) return extended{};
                     return a < b ? run(b, a) : run(a, b);
                 }
             };
             
-            template <typename N, typename Z>
+            template <natural N, integer Z>
             struct extended<N, Z> {
                 N GCD;
                 Z BezoutS;
@@ -109,7 +112,11 @@ namespace data::math {
                 static extended algorithm(const uint64 a, const uint64 b) {
                     if(a > 0x7fffffffffffffff || b > 0x7fffffffffffffff) return {};
                     extended<int64> e = extended<int64>::algorithm(static_cast<int64>(a), static_cast<int64>(b));
+<<<<<<< HEAD
                     return extended{data::abs<int64>(e.GCD), e.BezoutS, e.BezoutT};
+=======
+                    return extended{abs<uint64>{}(e.GCD), e.BezoutS, e.BezoutT};
+>>>>>>> b60d753... math concepts. -- incomplete, does not compile
                 }
                 
             private:

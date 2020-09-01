@@ -7,6 +7,14 @@
 #include <data/data.hpp>
 
 namespace data {
+
+    template <typename X>
+    requires math::number::natural<X>
+    void is_natural() {}
+    
+    TEST(NTest, TestNInterface) {
+        is_natural<N>();
+    }
     
     TEST(NTest, TestStringToN) {
         
@@ -124,7 +132,7 @@ namespace data {
         
         EXPECT_FALSE(p == N{n_dec});
         EXPECT_FALSE(n == N{p_dec});
-        /*
+        
         N_bytes<endian::big> p_bytes{p_hex};
         N_bytes<endian::big> n_bytes{n_hex};
         
@@ -138,7 +146,7 @@ namespace data {
         EXPECT_EQ(n_bytes, N_bytes<endian::big>{n_from_big});
         
         EXPECT_EQ(p_from_big, p_from_little);
-        EXPECT_EQ(n_from_big, n_from_little);*/
+        EXPECT_EQ(n_from_big, n_from_little);
         
     }
     

@@ -69,6 +69,11 @@ namespace data::math {
             return x.im();
         }
     };
+    
+    template <typename R> struct normed<complex<R>> {
+        using quad_type = nonnegative<R>;
+        using norm_type = nonnegative<R>;\
+    };
 
 }
 

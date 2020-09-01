@@ -7,7 +7,14 @@
 #include <iostream>
 
 namespace data {
+
+    template <typename X>
+    requires math::number::integer<X>
+    void is_integer() {}
     
+    TEST(ZTest, TestZInterface) {
+        is_integer<Z>();
+    }
     
     TEST(ZTest, TestZToHexString) {
         

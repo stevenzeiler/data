@@ -5,20 +5,21 @@
 #ifndef DATA_MATH_NUMBER_GMP_SQRT
 #define DATA_MATH_NUMBER_GMP_SQRT
 
-#include <data/math/number/gmp/N.hpp>
+#include <data/math/number/gmp/Z.hpp>
 #include <data/math/number/sqrt.hpp>
 #include <data/math/complex.hpp>
+#include <data/math/number/integer.hpp>
 
 namespace data::math::number::gmp {
         
-    N sqrt(const N& n);
-    N root(const N& n, uint32 p);
+    Z sqrt(const Z& n);
+    Z root(const Z& n, uint32 p);
     
-    N inline N::sqrt() const {
+    Z inline Z::sqrt() const {
         return gmp::sqrt(*this);
     }
         
-    N inline sqrt(const N& n) {
+    Z inline sqrt(const Z& n) {
         return root(n, 2);
     }
 
@@ -26,24 +27,24 @@ namespace data::math::number::gmp {
 
 namespace data::math {
     
-    template <> struct sqrt<number::gmp::N, number::gmp::N> {
-        number::gmp::N operator()(const number::gmp::N &n) const {
+    template <> struct sqrt<N<number::gmp::Z>, N<number::gmp::Z>> {
+        N<number::gmp::Z> operator()(const N<number::gmp::Z> &n) const {
             return n.sqrt();
         }
     };
     
-    template <> struct sqrt<number::gmp::N, number::gmp::Z> {
-        number::gmp::N operator()(const number::gmp::Z &n) const {
-            if (n < 0) return number::gmp::N{};
-            return sqrt<number::gmp::N, number::gmp::N>{}(number::gmp::N{n});
+    template <> struct sqrt<N<number::gmp::Z>, number::gmp::Z> {
+        N<number::gmp::Z> operator()(const number::gmp::Z &n) const {
+            if (n < 0) return N<number::gmp::Z>{number::gmp::Z{}};
+            return sqrt<N<number::gmp::Z>, N<number::gmp::Z>>{}(N<number::gmp::Z>{n});
         }
     };
     
     template <> struct sqrt<number::gmp::Z, number::gmp::Z> {
         number::gmp::Z operator()(const number::gmp::Z &z) const {
-            number::gmp::N n = sqrt<number::gmp::N, number::gmp::Z>{}(z);
-            if (n.valid()) return number::gmp::N{};
-            return number::gmp::Z(n);
+            N<number::gmp::Z> n = sqrt<N<number::gmp::Z>, number::gmp::Z>{}(z);
+            if (n.valid()) return N<number::gmp::Z>{number::gmp::Z{}};
+            return n.Value;
         }
     };
 

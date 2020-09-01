@@ -5,9 +5,11 @@
 #ifndef DATA_MATH_NUMBER_NATURAL
 #define DATA_MATH_NUMBER_NATURAL
 
+#include <data/types.hpp>
 #include <data/encoding/endian.hpp>
 #include <data/math/countable.hpp>
 #include <data/math/cayley_dickson.hpp>
+#include <data/math/number/bounded.hpp>
 
 namespace data::interface {
     template <typename N>
@@ -18,6 +20,13 @@ namespace data::interface {
         { N(x) } -> std::same_as<N>; 
     } && requires (const N& n) {
         { uint64(n) } -> std::same_as<uint64>;
+    };
+    
+    template <typename N, endian::order r>
+    concept N_bytes_convertible = requires (const math::N_bytes<r>& n) { 
+        { N(n) } -> std::same_as<N>; 
+    } && requires (const N& n) { 
+        { math::N_bytes<r>(n) } -> std::same_as<math::N_bytes<r>>; 
     };
     
     template <typename N>
@@ -34,7 +43,9 @@ namespace data::math {
             typename commutative<plus<N>, N>; 
             typename commutative<times<N>, N>;
         } && std::copyable<N> && std::default_initializable<N> && 
-        interface::uint64_convertible<N>;
+        interface::uint64_convertible<N> && 
+        interface::N_bytes_convertible<N, endian::big> && 
+        interface::N_bytes_convertible<N, endian::little>;
     
     template <natural N> struct normed<N> {
         using quad_type = N;

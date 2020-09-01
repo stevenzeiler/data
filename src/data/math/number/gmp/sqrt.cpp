@@ -2,12 +2,12 @@
 #include <data/math/number/gmp/sqrt.hpp>
 
 namespace data::math::number::gmp {
-        
-    N root(const N& n, uint32 p) {
-        if (p == 0) return N{};
-        if (p == 1 || n == N{0} || n == N{1}) return n;
-        N p_root{};
-        if (0 == mpz_root(p_root.Value.MPZ, n.Value.MPZ, p)) return N{};
+    
+    Z root(const Z& n, uint32 p) {
+        if (p == 0 || n < 0) return Z{};
+        if (p == 1 || n == Z{0} || n == Z{1}) return n;
+        Z p_root{};
+        if (0 == mpz_root(p_root.MPZ, n.MPZ, p)) return Z{};
         return p_root;
     }
 

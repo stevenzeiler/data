@@ -5,33 +5,14 @@
 #ifndef DATA_MATH_ALGEBRA
 #define DATA_MATH_ALGEBRA
 
-#include <data/math/point.hpp>
+#include <data/math/field.hpp>
 
-namespace data::interface {
-    // TODO
+namespace data::math {
+    template <typename V, typename F>
+    concept vector = group<V, plus<V>> && field<F> && multiplicative<V, V, F>;
     
-    /*
-    template <typename x, typename r>
-    struct algebra : public linear::space<x, r> {
-        x times(x a, x b) const {
-            return a ^ b;
-        }
-    };
-        
-    template <typename x, typename r>
-    struct division_algebra : public algebra<x, r> {
-        x divide(x a, x b) const {
-            return a / b;
-        }
-    };
-        
-    template <typename x, typename r>
-    struct normed_division_algebra : public ring<x> {
-        nonnegative<r> norm(x a) const {
-            return a.norm();
-        }
-    };
-    */
+    template <typename V, typename F>
+    concept algebra = ring<V, plus<V>, times<V>> && field<F> && multiplicative<V, V, F>;
     
 }
 

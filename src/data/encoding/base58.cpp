@@ -3,10 +3,11 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <data/encoding/base58.hpp>
-#include <data/math/number/gmp/N.hpp>
+#include <data/math/number/gmp/Z.hpp>
 #include <data/math/number/bytes/N.hpp>
 #include <data/encoding/digits.hpp>
 #include <data/math/number/bounded.hpp>
+#include <data/math/number/integer.hpp>
 
 namespace data::encoding::base58 {
     
@@ -33,7 +34,7 @@ namespace data::encoding::base58 {
         
     string::string(const std::string& x) : std::string{base58::valid(x) ? x : ""} {}
     
-    using nat = math::number::gmp::N;
+    using nat = math::number::N<math::number::gmp::Z>;
     
     string::string(uint64 x) : std::string{write_b58(nat{x})} {}
     

@@ -148,14 +148,14 @@ namespace data::math {
     
     template <typename A, typename N>
     struct identity<plus<polynomial<A, N>>, polynomial<A, N>> : identity<plus<A>, A> {
-        static const polynomial<A, N> value() {
+        polynomial<A, N> operator()() const {
             return identity<plus<A>, A>::value();
         }
     };
     
     template <typename A, typename N>
     struct identity<times<polynomial<A, N>>, polynomial<A, N>> : identity<times<A>, A> {
-        static const polynomial<A, N> value() {
+        polynomial<A, N> operator()() const { 
             return identity<times<A>, A>::value();
         }
     };

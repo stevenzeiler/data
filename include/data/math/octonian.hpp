@@ -70,9 +70,14 @@ namespace data::math {
             return oct::inverse();
         }
         
-        nonnegative<R> quadrance() const {
+        R quadrance() const {
             return oct::quadrance();
         }
+    };
+    
+    template <typename R> struct normed<octonion<R>> {
+        using quad_type = nonnegative<R>;
+        using norm_type = nonnegative<R>;
     };
     
 }

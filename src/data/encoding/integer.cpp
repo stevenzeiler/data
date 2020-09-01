@@ -5,10 +5,11 @@
 #include <data/encoding/integer.hpp>
 #include <data/encoding/hex.hpp>
 #include <data/encoding/digits.hpp>
-#include <data/math/number/gmp/N.hpp>
+#include <data/math/number/gmp/Z.hpp>
 #include <data/math/number/bytes/N.hpp>
 #include <data/math/number/bytes/Z.hpp>
 #include <data/io/unimplemented.hpp>
+#include <data/math/number/bounded.hpp>
 #include <algorithm>
 
 namespace data::encoding {

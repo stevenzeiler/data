@@ -28,12 +28,13 @@ namespace data::encoding::base58 {
     }
     
     inline char digit(char c) {
-        return c < '1' ? -1 : c <= '9' ?  c - '1' : c < 'A' ? -1 : c <= 'H' ? c - 'A' + 9 : c < 'J' ? -1 : c <= 'N' ? c - 'J' + 17 : c < 'P' ? -1 : c <= 'Z' ? c - 'P' + 22 : c < 'a' ? -1 : c <= 'k' ? c - 'a' + 33 : c < 'm' ? -1 : c <= 'z' ? c - 'm' + 44 : -1;
+        return c < '1' ? -1 : c <= '9' ?  c - '1' : c < 'A' ? -1 : c <= 'H' ? c - 'A' + 9 : c < 'J' ? -1 : c <= 'N' ? c - 'J' + 17 : 
+            c < 'P' ? -1 : c <= 'Z' ? c - 'P' + 22 : c < 'a' ? -1 : c <= 'k' ? c - 'a' + 33 : c < 'm' ? -1 : c <= 'z' ? c - 'm' + 44 : -1;
     };
     
     template <math::natural N>
     N read(const string_view s) {
-        if (s.size() == 0) return N{};
+        if (s.size() == 0) return N{0};
         
         N power{1};
         
@@ -41,13 +42,20 @@ namespace data::encoding::base58 {
         
         for (int i = s.size() - 1; i >= 0; i--) {
             char v = digit(s[i]);
-            if (v == -1) return N{};
-            n += power * uint64(v);
+            if (v == -1) throw std::invalid_argument{std::string{"invalid base 58 character "} + v};
+            n += power * N{static_cast<uint64>(v)};
             power *= 58;
         }
         
         return n;
     }
+    
+    template <math::natural N>
+    inline std::string write(N n) {
+        return encoding::write_base<N>(n, characters());
+    };
+    
+    std::string write(const bytes_view b);
     
     class view : public string_view {
         bytes Bytes;

@@ -66,6 +66,11 @@ namespace data::math {
         }
     };
     
+    template <typename R> struct normed<quaternion<R>> {
+        using quad_type = nonnegative<R>;
+        using norm_type = nonnegative<R>;
+    };
+    
 }
 
 #endif

@@ -9,9 +9,7 @@
 #include <iterator>
 #include <data/encoding/halves.hpp>
 #include <data/math/arithmetic.hpp>
-#include <data/math/associative.hpp>
-#include <data/math/commutative.hpp>
-#include <data/math/division.hpp>
+#include <data/math/abs.hpp>
 #include <data/iterable.hpp>
 
 namespace data::math::number {
@@ -87,8 +85,8 @@ namespace data::math {
     
     using Z_bytes_big = typename number::bytes<true, endian::big>;
 
-    // Declare the plus and times operations on these types
-    // as satisfying the expected relations. 
+    // plus and times are associative and commutative
+    // for both bounded and bytes. 
     template <bool is_signed, endian::order r, size_t size> 
     struct commutative<plus<number::bounded<is_signed, r, size>>, 
         number::bounded<is_signed, r, size>> {};
@@ -120,6 +118,75 @@ namespace data::math {
     template <bool is_signed, endian::order r> 
     struct associative<times<number::bytes<is_signed, r>>, 
         number::bytes<is_signed, r>> {};
+    
+    // norm types for bounded and bytes. 
+    template <bool is_signed, endian::order r, size_t size>
+    struct normed<number::bounded<is_signed, r, size>> {
+        using quad_type = uint<r, size>;
+        using norm_type = uint<r, size>;
+    };
+    
+    template <bool is_signed, endian::order r>
+    struct normed<number::bytes<is_signed, r>> {
+        using quad_type = N_bytes<r>;
+        using norm_type = N_bytes<r>;
+    };
+    
+    // identity operations for plus and times. 
+    template <bool is_signed, endian::order r, size_t size> 
+    struct identity<plus<number::bounded<is_signed, r, size>>, number::bounded<is_signed, r, size>> {
+        number::bounded<is_signed, r, size> operator()() {
+            return {0};
+        }
+    };
+    
+    template <bool is_signed, endian::order r, size_t size>
+    struct identity<times<number::bounded<is_signed, r, size>>, number::bounded<is_signed, r, size>> {
+        number::bounded<is_signed, r, size> operator()() {
+            return {1};
+        }
+    };
+    
+    template <bool is_signed, endian::order r> 
+    struct identity<plus<number::bytes<is_signed, r>>, number::bytes<is_signed, r>> {
+        number::bytes<is_signed, r> operator()() {
+            return {0};
+        }
+    };
+    
+    template <bool is_signed, endian::order r>
+    struct identity<times<number::bytes<is_signed, r>>, number::bytes<is_signed, r>> {
+        number::bytes<is_signed, r> operator()() {
+            return {1};
+        }
+    };
+    
+    // inverse addition. 
+    template <bool is_signed, endian::order r, size_t size>
+    struct inverse<
+        number::bounded<is_signed, r, size>, 
+        plus<number::bounded<is_signed, r, size>>, 
+        number::bounded<is_signed, r, size>> {
+        static number::bounded<is_signed, r, size> invert(
+            const number::bounded<is_signed, r, size>& a, 
+            const plus<number::bounded<is_signed, r, size>>&, 
+            const number::bounded<is_signed, r, size>& b) {
+            return a - b;
+        }
+    };
+    
+    template <bool is_signed, endian::order r>
+    struct inverse<
+        number::bytes<is_signed, r>, 
+        plus<number::bytes<is_signed, r>>, 
+        number::bytes<is_signed, r>> {
+        static number::bytes<is_signed, r> invert(
+            const number::bytes<is_signed, r>& a, 
+            const plus<number::bytes<is_signed, r>>&, 
+            const number::bytes<is_signed, r>& b) {
+            return a - b;
+        }
+    };
     
     template <bool is_signed, endian::order r, size_t size> 
     struct divide<number::bounded<is_signed, r, size>, uint64> {
@@ -163,11 +230,6 @@ namespace data::encoding::natural {
 }
 
 namespace data::math::number::meta {
-    
-    template <size_t x> struct next_multiple_of_4 {
-        static const size_t Remainder = x % 4;
-        static const size_t Value = Remainder == 0 ? x : x + 4 - Remainder ;
-    };
     
     template <bool is_signed, endian::order> struct get_fundamental_arithmatic;
     
@@ -253,6 +315,11 @@ namespace data::math::number {
         
         bytes trim() const;
         
+    };
+    
+    template <size_t x> struct next_multiple_of_4 {
+        static const size_t Remainder = x % 4;
+        static const size_t Value = Remainder == 0 ? x : x + 4 - Remainder;
     };
     
     template <bool is_signed, endian::order r, size_t x> 

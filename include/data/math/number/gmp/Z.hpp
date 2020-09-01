@@ -13,8 +13,6 @@
 
 namespace data::math::number::gmp {
     
-    struct N;
-    
     struct Z {
         mpz_t MPZ;
         
@@ -22,7 +20,9 @@ namespace data::math::number::gmp {
             MPZ[0] = MPZInvalid;
         }
         
-        Z(const N&);
+        static Z zero() {
+            return Z{};
+        }
         
         bool valid() const {
             return gmp::valid(MPZ[0]);
@@ -106,8 +106,6 @@ namespace data::math::number::gmp {
             return __gmp_binary_equal::eval(MPZ, z.MPZ);
         }
         
-        bool operator==(const N&) const;
-        
         bool operator!=(int64 z) const {
             return !operator==(z);
         }
@@ -115,8 +113,6 @@ namespace data::math::number::gmp {
         bool operator!=(const Z& z) const {
             return !operator==(z);
         }
-        
-        bool operator!=(const N&) const;
         
         bool operator<(int64 n) const {
             return __gmp_binary_less::eval(MPZ, (signed long int)(n));
@@ -126,8 +122,6 @@ namespace data::math::number::gmp {
             return __gmp_binary_less::eval(MPZ, n.MPZ);
         }
         
-        bool operator<(const N&) const;
-        
         bool operator>(int64 n) const {
             return __gmp_binary_greater::eval(MPZ, (signed long int)(n));
         }
@@ -135,8 +129,6 @@ namespace data::math::number::gmp {
         bool operator>(const Z& n) const {
             return __gmp_binary_greater::eval(MPZ, n.MPZ);
         }
-        
-        bool operator>(const N&) const;
         
         bool operator<=(int64 n) const {
             return !operator>(n);
@@ -146,8 +138,6 @@ namespace data::math::number::gmp {
             return !operator>(n);
         }
         
-        bool operator<=(const N&) const;
-        
         bool operator>=(int64 n) const {
             return !operator<(n);
         }
@@ -155,8 +145,6 @@ namespace data::math::number::gmp {
         bool operator>=(const Z& n) const {
             return !operator<(n);
         }
-        
-        bool operator>=(const N&) const;
         
         explicit operator int64() const;
         
@@ -198,8 +186,6 @@ namespace data::math::number::gmp {
             return sum;
         }
         
-        Z operator+(const N&) const;
-        
         Z& operator+=(int64 n) {
             __gmp_binary_plus::eval(MPZ, MPZ, (signed long int)(n));
             return *this;
@@ -209,8 +195,6 @@ namespace data::math::number::gmp {
             __gmp_binary_plus::eval(MPZ, MPZ, n.MPZ);
             return *this;
         }
-        
-        Z& operator+=(const N&);
         
         Z operator-(const gmp_int n) const {
             Z sum{};
@@ -224,8 +208,6 @@ namespace data::math::number::gmp {
             return sum;
         }
         
-        Z operator-(const N&) const;
-        
         Z operator-() const {
             Z z{*this};
             z.MPZ[0]._mp_size = -z.MPZ[0]._mp_size;
@@ -236,8 +218,6 @@ namespace data::math::number::gmp {
             __gmp_binary_minus::eval(MPZ, MPZ, n.MPZ);
             return *this;
         }
-        
-        Z& operator-=(const N&);
         
         Z operator*(int64 n) const {
             Z prod{};
@@ -251,8 +231,6 @@ namespace data::math::number::gmp {
             return prod;
         }
         
-        Z operator*(const N&) const;
-        
         Z& operator*=(int64 n) {
             __gmp_binary_multiplies::eval(MPZ, MPZ, (signed long int)(n));
             return *this;
@@ -262,8 +240,6 @@ namespace data::math::number::gmp {
             __gmp_binary_multiplies::eval(MPZ, MPZ, z.MPZ);
             return *this;
         }
-        
-        Z& operator*=(const N&);
         
         Z operator^(uint32 n) const {
             Z pow{};
@@ -276,32 +252,14 @@ namespace data::math::number::gmp {
             return *this;
         }
         
-        division<Z> divide(const Z& z) const {
-            division<Z> qr{};
-            mpz_fdiv_qr(qr.Quotient.MPZ, qr.Remainder.MPZ, MPZ, z.MPZ);
-            return qr;
-        }
-        
-        bool operator|(const Z& z) const {
-            return divide(z).Remainder == 0;
-        }
-        
-        Z operator/(const Z& z) const {
-            return divide(z).Quotient;
-        }
-        
-        Z operator%(const Z& z) const {
-            return divide(z).Remainder;
-        }
-        
         Z& operator/=(const Z& z) {
-            Z q = operator/(z);
-            return operator=(q);
+            __gmp_binary_divides::eval(&MPZ[0], &MPZ[0], &z.MPZ[0]);
+            return *this;
         }
         
         Z& operator%=(const Z& z) {
-            Z r = operator%(z);
-            return operator=(r);
+            __gmp_binary_modulus::eval(&MPZ[0], &MPZ[0], &z.MPZ[0]);
+            return *this;
         }
         
         Z operator<<(int64 x) const {
@@ -389,10 +347,24 @@ namespace data::math {
         }
     };
     
-    template <> struct normed<number::gmp::Z> {
-        using quad_type = number::gmp::N;
-        using norm_type = number::gmp::N;
+    template <> struct inverse<number::gmp::Z, plus<number::gmp::Z>, number::gmp::Z> {
+        static number::gmp::Z invert(const number::gmp::Z& a, const plus<number::gmp::Z>&, const number::gmp::Z& b) {
+            return a - b;
+        }
     };
+    
+    template <> struct normed<number::gmp::Z> {
+        using quad_type = number::N<number::gmp::Z>;
+        using norm_type = number::N<number::gmp::Z>;
+    };
+
+    template <> struct abs<number::gmp::Z> {
+        number::N<number::gmp::Z> operator()(const number::gmp::Z& i) const {
+            if (i < 0) return number::N<number::gmp::Z>{-i};
+            return number::N<number::gmp::Z>{i};
+        }
+    };
+
 }
 
 namespace data::encoding::hexidecimal {

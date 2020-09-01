@@ -6,23 +6,20 @@
 #define DATA_MATH_NUMBER_GMP_AKS
 
 #include <data/math/number/prime.hpp>
-#include <data/math/number/gmp/N.hpp>
+#include <data/math/number/integer.hpp>
+#include <data/math/number/gmp/Z.hpp>
 
 namespace data::math::number::gmp {
     
-    bool aks_is_prime(const gmp::Z);
-    
-    inline bool aks_is_prime(const gmp::N n) {
-        return aks_is_prime(n.Value);
-    }
+    bool aks_is_prime(const Z);
     
 }
 
 namespace data::math::number {
     
-    template <> struct AKS<gmp::N> {
-        prime<gmp::N> is_prime(const gmp::N n) {
-            return gmp::aks_is_prime(n) ? prime<gmp::N>{n, prime<gmp::N>::certain} : prime<gmp::N>{};
+    template <> struct AKS<N<gmp::Z>> {
+        prime<N<gmp::Z>> is_prime(const N<gmp::Z> n) {
+            return gmp::aks_is_prime(n.Value) ? prime<N<gmp::Z>>{n, prime<N<gmp::Z>>::certain} : prime<N<gmp::Z>>{};
         }
     };
     
@@ -32,7 +29,7 @@ namespace data::math::number {
         }
     };
     
-    template struct AKS<gmp::N>;
+    template struct AKS<N<gmp::Z>>;
     template struct AKS<gmp::Z>;
     
 }

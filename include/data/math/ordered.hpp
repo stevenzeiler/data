@@ -13,12 +13,12 @@ namespace data {
     
     template <typename X> concept ordered = std::totally_ordered<X>;
     
-    template <ordered X> inline bool equal(const X& a, const X& b);
-    template <ordered X> inline bool unequal(const X& a, const X& b);
-    template <ordered X> inline bool less_equal(const X& a, const X& b);
-    template <ordered X> inline bool greater_equal(const X& a, const X& b);
-    template <ordered X> inline bool less(const X& a, const X& b);
-    template <ordered X> inline bool greater(const X& a, const X& b);
+    template <ordered X> bool equal(const X& a, const X& b);
+    template <ordered X> bool unequal(const X& a, const X& b);
+    template <ordered X> bool less_equal(const X& a, const X& b);
+    template <ordered X> bool greater_equal(const X& a, const X& b);
+    template <ordered X> bool less(const X& a, const X& b);
+    template <ordered X> bool greater(const X& a, const X& b);
     
 }
 

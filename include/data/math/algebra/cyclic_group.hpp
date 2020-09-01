@@ -9,7 +9,6 @@
 
 #include <data/math/number/modular.hpp>
 #include <data/math/group.hpp>
-#include <data/math/arithmetic.hpp>
 
 namespace data::math::algebra {
     
@@ -49,17 +48,17 @@ namespace data::math {
     
     template <typename N, auto & natural>
     struct associative<
-        data::plus<algebra::cyclic_group<N, natural>>, 
+        plus<algebra::cyclic_group<N, natural>>, 
         algebra::cyclic_group<N, natural>>
-        : associative<data::plus<N>, N> {};
+        : associative<plus<N>, N> {};
     
     template <typename N, auto & natural>
     struct identity<
-        data::plus<algebra::cyclic_group<N, natural>>, 
+        plus<algebra::cyclic_group<N, natural>>, 
         algebra::cyclic_group<N, natural>>
-        : identity<data::plus<N>, N> {
+        : identity<plus<N>, N> {
         static const algebra::cyclic_group<N, natural> value() {
-            return {identity<data::plus<N>, N>::value()};
+            return {identity<plus<N>, N>::value()};
         }
     };
     

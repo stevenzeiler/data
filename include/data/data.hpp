@@ -38,16 +38,25 @@ namespace data {
 #include <data/math/number/sqrt.hpp>
 
 // Natural numbers and integers
-#include <data/math/number/gmp/N.hpp>
+#include <data/math/number/gmp/Z.hpp>
 #include <data/math/number/extended_euclidian.hpp>
 #include <data/math/number/eratosthenes.hpp>
 #include <data/math/number/gmp/aks.hpp>
 
 namespace data {
+    
+    // Integers
+    using Z = math::number::gmp::Z;
+    
+}
+
+#include <data/math/number/integer.hpp>
+
+namespace data {
     // we use a wrapper around gmp for natural numbers and integers. 
     
     // Natural numbers
-    using N = math::number::gmp::N;
+    using N = math::number::N<Z>;
     
     // Primes
     using prime = math::number::prime<N>;
@@ -63,18 +72,19 @@ namespace data {
     // slow for practical use. 
     using AKS = math::number::AKS<N>;
     
-    // Integers
-    using Z = math::number::gmp::Z;
-    
 }
 
 // Some algebra
 #include <data/math/polynomial.hpp>
 #include <data/math/permutation.hpp>
+#include <data/math/number/rational.hpp>
 
 namespace data {
     
-    // Polynomials 
+    // rationals
+    using Q = math::number::fraction<Z, N>;
+    
+    // polynomials 
     template <typename X> 
     using polynomial = data::math::polynomial<X, N>;
     
@@ -95,6 +105,8 @@ namespace data {
 #include <data/math/octonian.hpp>
 
 // other normed division algebras. 
+// these are based on the rational
+// numbers rather than the real numbers. 
 namespace data {
     
     // Gaussian numbers (complex rationals)
@@ -117,7 +129,7 @@ namespace data {
 
 // algebraic constructs
 namespace data {
-    
+    /*
     template <auto & mod>
     using prime_field = math::algebra::prime_field_element<N, Z, mod>;
     
@@ -125,7 +137,7 @@ namespace data {
     using cyclic_group = math::algebra::cyclic_group<N, mod>;
     
     template <auto & mod>
-    using dihedral_group = math::algebra::dihedral_group<N, mod>;
+    using dihedral_group = math::algebra::dihedral_group<N, mod>;*/
     /*
     template <auto & mod>
     using symmetric_group = math::algebra::symmetric_group<N, mod>;
@@ -148,7 +160,7 @@ namespace data::math::number {
 }
 
 namespace data::math::algebra {
-    
+    /*
     template struct prime_field<N, Z, number::two>;
     template struct prime_field<N, Z, number::three>;
     template struct prime_field<N, Z, number::five>;
@@ -161,7 +173,7 @@ namespace data::math::algebra {
     
     template struct dihedral_group<N, number::three>;
     template struct dihedral_group<N, number::four>;
-    template struct dihedral_group<N, number::five>;
+    template struct dihedral_group<N, number::five>;*/
     /*
     template struct symmetric_group<N, number::one>;
     template struct symmetric_group<N, number::two>;
@@ -175,11 +187,5 @@ namespace data::math::algebra {
     template struct alternating_group<N, number::four>;
     template struct alternating_group<N, number::five>;*/
 }
-
-// real numbers
-// I need to start being able to do real numbers. 
-// reals are convergent sequences of Q. 
-// Can also get p-adic out of the way, since they are also convergent sequences in Q. 
-// need valuations and sequences. 
 
 #endif

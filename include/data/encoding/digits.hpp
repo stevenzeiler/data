@@ -16,8 +16,8 @@ namespace data::encoding {
         tool::linked_stack<char> dig{};
         N x = n;
         while(x > 0) {
-            math::division<N, uint64> d = divide(x, math::nonzero{base});
-            dig = dig << digits[(uint64)(d.Remainder)];
+            math::division<N, uint64> d = math::divide<N, uint64>{}(x, math::nonzero<uint64>{base});
+            dig = dig << digits[d.Remainder];
             x = d.Quotient;
         }
         

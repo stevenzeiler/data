@@ -8,11 +8,19 @@
 #include <stdexcept>
 #include <data/math/number/natural.hpp>
 #include <data/math/ring.hpp>
+#include <data/math/nonnegative.hpp>
 #include <data/encoding/integer.hpp>
 
 namespace data::interface {
     template <typename Z>
     concept has_int64_constructor = requires (const int64& x) { { Z{x} } -> std::same_as<Z>; };
+    
+    template <typename Z, endian::order r>
+    concept Z_bytes_convertible = requires (const math::Z_bytes<r>& n) { 
+        { Z{n} } -> std::same_as<Z>; 
+    } && requires (const Z& n) { 
+        { math::Z_bytes<r>(n) } -> std::same_as<math::Z_bytes<r>>; 
+    };
 }
 
 namespace data::math {
@@ -21,7 +29,9 @@ namespace data::math {
         interface::has_negative_operator<Z> && requires { 
             typename commutative<times<Z>, Z>; 
         } && std::copyable<Z> && std::default_initializable<Z> && 
-        interface::has_int64_constructor<Z>;
+        interface::has_int64_constructor<Z> && 
+        interface::Z_bytes_convertible<Z, endian::big> && 
+        interface::Z_bytes_convertible<Z, endian::little>;
     
     // norm type is required
     template <integer Z> struct abs<Z> {
@@ -60,6 +70,12 @@ namespace data::math::number {
         N() : Value{0} {}
         
         N(uint64);
+        
+        template<endian::order r>
+        N(const N_bytes<r>& x);
+        
+        template<endian::order r>
+        operator N_bytes<r>() const;
         
         operator Z() const {
             return Value;
