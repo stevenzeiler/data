@@ -5,7 +5,7 @@
 #ifndef DATA_MATH_ARITHMETIC
 #define DATA_MATH_ARITHMETIC
 
-#include <data/iterable.hpp>
+#include <data/cross.hpp>
 #include <type_traits>
 
 namespace data {
