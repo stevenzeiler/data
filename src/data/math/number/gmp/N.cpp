@@ -212,12 +212,12 @@ namespace data::math::number::gmp {
         b = *data::encoding::hex::read(data::encoding::hexidecimal::write(n).substr(2));
     }
     
-    void N_write_little(bytes& b, const N& n) {
+    void N_write_little(data::bytes& b, const N& n) {
         N_write_big(b, n);
         std::reverse(b.begin(), b.end());
     }
         
-    void N::write_bytes(bytes& b, endian::order o) const {
+    void N::write_bytes(data::bytes& b, endian::order o) const {
         if (o == endian::order::big) {
             N_write_big(b, *this);
             return;

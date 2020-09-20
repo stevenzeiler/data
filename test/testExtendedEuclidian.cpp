@@ -2,11 +2,12 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include "gtest/gtest.h"
 #include "data/math/number/extended_euclidian.hpp"
 #include "data/math/number/bytes/N.hpp"
 #include "data/math/number/bytes/Z.hpp"
+#include "data/math/number/bounded.hpp"
 #include "data/data.hpp"
-#include "gtest/gtest.h"
 
 namespace data {
     

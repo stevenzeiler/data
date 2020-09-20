@@ -4,6 +4,7 @@
 
 #include <iterator>
 #include "data/tools.hpp"
+#include "data/math/number/int.hpp"
 
 namespace data {
 
@@ -45,4 +46,14 @@ namespace data {
     template <std::bidirectional_iterator X>
     void is_bidirectional_iterator() {}
 
+    template <std::random_access_iterator X>
+    void is_random_access_iterator() {}
+
+    template <typename X>
+    requires math::number::uint<X>
+    void is_uint() {}
+
+    template <typename X>
+    requires math::number::sint<X>
+    void is_sint() {}
 }

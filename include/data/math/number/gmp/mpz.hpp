@@ -6,6 +6,7 @@
 #define DATA_MATH_NUMBER_GMP_MPZ
 
 #include <data/math/sign.hpp>
+#include <data/math/number/bounded.hpp>
 #include <data/math/number/natural.hpp>
 #include <gmp.h>
 
@@ -41,16 +42,5 @@ namespace data::math::number::gmp {
 #undef __GMPNS_DEFINE_BINARY_FUNCTION
 #undef __GMPN_DEFINE_BINARY_FUNCTION
 #undef __GMPND_DEFINE_BINARY_FUNCTION
-
-#include <data/encoding/endian.hpp>
-
-namespace data::math::number {
-    template <bool is_signed, endian::order o, size_t size> struct bounded;
-    template <endian::order o, size_t size> struct bounded<false, o, size>;
-    template <endian::order o, size_t size> struct bounded<true, o, size>;
-    
-    template <endian::order o> struct N_bytes;
-    template <endian::order o> struct Z_bytes;
-}
 
 #endif

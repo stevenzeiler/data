@@ -88,9 +88,15 @@ namespace data {
         constexpr static uint64 lesser = 0x00ff;
     };
     
-    template <typename whole> struct half_of;
+    template <typename half> struct doubled;
     
-    template <> struct half_of<uint64> {
+    template <typename whole> struct halved;
+    
+    template <typename whole> using half = halved<whole>::type;
+    
+    template <typename whole> using twice = doubled<whole>::type;
+    
+    template <> struct halved<uint64> {
         using type = uint32;
         static type greater(uint64 u) {
             return u >> digits<type>::value;
@@ -101,7 +107,7 @@ namespace data {
         }
     };
     
-    template <> struct half_of<int64> {
+    template <> struct halved<int64> {
         using type = int32;
         static type greater(int64 u) {
             return u >> digits<type>::value;
@@ -112,7 +118,7 @@ namespace data {
         };
     };
     
-    template <> struct half_of<uint32> {
+    template <> struct halved<uint32> {
         using type = uint16;
         static type greater(uint32 u) {
             return u >> digits<type>::value;
@@ -123,7 +129,7 @@ namespace data {
         }
     };
     
-    template <> struct half_of<int32> {
+    template <> struct halved<int32> {
         using type = int16;
         static type greater(int32 u) {
             return u >> digits<type>::value;
@@ -134,7 +140,7 @@ namespace data {
         }
     };
     
-    template <> struct half_of<uint16> {
+    template <> struct halved<uint16> {
         using type = byte;
         static type greater(uint16 u) {
             return u >> digits<type>::value;
@@ -145,7 +151,7 @@ namespace data {
         }
     };
     
-    template <> struct half_of<int16> {
+    template <> struct halved<int16> {
         using type = char;
         static type greater(int16 u) {
             return u >> digits<type>::value;
@@ -156,81 +162,79 @@ namespace data {
         }
     };
     
-    template <endian::order o, bool is_signed, size_t size> struct half_of<endian::arithmetic<o, is_signed, size>> {
-        using type = endian::arithmetic<o, is_signed, digits<typename half_of<endian::to_native<is_signed, size>>::type>::value>;
+    template <endian::order o, bool is_signed, size_t size> struct halved<endian::arithmetic<o, is_signed, size>> {
+        using type = endian::arithmetic<o, is_signed, digits<half<endian::to_native<is_signed, size>>>::value>;
         static type greater(endian::arithmetic<o, is_signed, size> u) {
-            return type{half_of<endian::to_native<is_signed, size>>::greater((endian::to_native<is_signed, size>)(u))};
+            return type{halved<endian::to_native<is_signed, size>>::greater((endian::to_native<is_signed, size>)(u))};
         }
         
         static type lesser(endian::arithmetic<o, is_signed, size> u) {
-            return type{half_of<endian::to_native<is_signed, size>>::lesser((endian::to_native<is_signed, size>)(u))};
+            return type{halved<endian::to_native<is_signed, size>>::lesser((endian::to_native<is_signed, size>)(u))};
         }
     };
     
     template<typename whole>
-    typename half_of<whole>::type greater_half(whole w) {
-        return half_of<whole>::greater(w);
+    typename halved<whole>::type greater_half(whole w) {
+        return halved<whole>::greater(w);
     };
     
     template<typename whole>
-    typename half_of<whole>::type lesser_half(whole w) {
-        return half_of<whole>::lesser(w);
+    typename halved<whole>::type lesser_half(whole w) {
+        return halved<whole>::lesser(w);
     };
     
-    template <typename half> struct twice;
-    
-    template <> struct twice<uint32> {
+    template <> struct doubled<uint32> {
         using type = uint64;
         static type extend(uint32 x) {
             return (type)(x);
         }
     };
     
-    template <> struct twice<int32> {
+    template <> struct doubled<int32> {
         using type = int64;
         static type extend(int32 x) {
             return (type)(x);
         }
     };
     
-    template <> struct twice<uint16> {
+    template <> struct doubled<uint16> {
         using type = uint32;
         static type extend(uint16 x) {
             return (type)(x);
         }
     };
     
-    template <> struct twice<int16> {
+    template <> struct doubled<int16> {
         using type = int32;
         static type extend(int16 x) {
             return (type)(x);
         }
     };
     
-    template <> struct twice<byte> {
+    template <> struct doubled<byte> {
         using type = uint16;
         static type extend(byte x) {
             return (type)(x);
         }
     };
     
-    template <> struct twice<char> {
+    template <> struct doubled<char> {
         using type = int16;
         static type extend(char x) {
             return (type)(x);
         }
     };
     
-    template <endian::order o, bool is_signed, size_t size> struct twice<endian::arithmetic<o, is_signed, size>> {
+    template <endian::order o, bool is_signed, size_t size> struct doubled<endian::arithmetic<o, is_signed, size>> {
         using type = endian::arithmetic<o, is_signed, 2 * size>;
         static type extend(endian::arithmetic<o, is_signed, size> x) {
-            return (typename twice<endian::to_native<is_signed, size>>::type)(x);
+            return (twice<endian::to_native<is_signed, size>>)(x);
         }
     };
     
     template<typename half>
-    typename twice<half>::type combine(half greater, half lesser) {
-        return ((typename twice<half>::type)(greater) << digits<half>::value) + lesser;
+    typename doubled<half>::type combine(half greater, half lesser) {
+        return ((typename doubled<half>::type)(greater) << digits<half>::value) + lesser;
     };
     
 }

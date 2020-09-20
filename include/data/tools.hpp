@@ -76,7 +76,25 @@ namespace data {
                 
         return reduce(inner{m}, k);
     }
+}
 
+#include <data/math/number/bounded.hpp>
+
+namespace data {
+    template <size_t size>
+    using uint = math::uint<endian::little, size>;
+    
+    template <size_t size>
+    using sint = math::sint<endian::little, size>;
+    
+    template <endian::order r>
+    using N_bytes = math::N_bytes_little;
+    
+    template <endian::order r>
+    using Z_bytes = math::Z_bytes_little;
+    
+    using uint160 = uint<20>;
+    using uint256 = uint<32>;
 }
 
 #endif

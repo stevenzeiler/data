@@ -6,17 +6,15 @@
 #define DATA_CRYPTO_DIGEST
 
 #include "data/types.hpp"
-#include <data/math/number/bounded/bounded.hpp>
+#include <data/math/number/bounded.hpp>
 
 namespace data::crypto {
     
     template <size_t s>
-    struct digest : uint<s> {
+    struct digest : math::uint<endian::little, s> {
         static const uint32 size = s;
         
-        using uint<s>::uint;
-        
-        digest() : uint<s>() {}
+        using math::uint<endian::little, s>::uint;
         
         bool valid() const;
     };
@@ -25,7 +23,7 @@ namespace data::crypto {
     inline bool digest<s>::valid() const {
         return *this != digest{0};
     }
-    
+
 }
 
 #endif

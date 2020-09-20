@@ -21,6 +21,8 @@ namespace data {
         typename X::iterator;
     };
     
+    template <typename X> 
+    concept bytes_range = iterable<X, byte>;
 }
 
 #endif

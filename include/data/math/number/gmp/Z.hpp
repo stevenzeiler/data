@@ -55,6 +55,12 @@ namespace data::math::number::gmp {
             return *this;
         }
         
+        template <endian::order r>
+        explicit operator Z_bytes<r>() const;
+        
+        template <endian::order r>
+        explicit Z(const Z_bytes<r>&);
+        
         math::sign sign() const {
             return gmp::sign(MPZ[0]);
         }
@@ -328,12 +334,6 @@ namespace data::math::number::gmp {
         }
         
         template <endian::order o> 
-        explicit Z(const Z_bytes<o>& b) : Z(bytes_view(b), o) {
-            if (b[0] < 0x80) return;
-            *this -= (Z{2} << (b.size() * 8));
-        }
-        
-        template <endian::order o> 
         explicit Z(const N_bytes<o>& b) : Z(bytes_view(b), o) {}
         
         template <endian::order o, size_t size> 
@@ -358,7 +358,7 @@ namespace data::math::number::gmp {
             operator+=(b[i]);
         }
         
-        void write_bytes(bytes&, endian::order o) const {
+        void write_bytes(data::bytes&, endian::order o) const {
             // if negative, size should be 1 greater. 
             throw method::unimplemented{"Z::write_bytes"};
         }

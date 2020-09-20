@@ -222,17 +222,20 @@ namespace data::math::number::gmp {
         N sqrt() const;
         
         template <endian::order o>
-        explicit N(const N_bytes<o>& n) : N{bytes_view(n), o} {}
+        explicit operator N_bytes<o>() const;
+        
+        template <endian::order o>
+        explicit N(const N_bytes<o>& n);
         
         template <endian::order o, size_t size> 
-        explicit N(const bounded<false, o, size>& b) : Value{b} {}
+        explicit N(const bounded<false, o, size>& b);
         
     private:
         N(const Z& z) : Value{z} {}
         
         N(bytes_view, endian::order);
         
-        void write_bytes(bytes&, endian::order) const;
+        void write_bytes(data::bytes&, endian::order) const;
         
         friend struct Z;
         friend struct math::sqrt<N, Z>;
@@ -333,6 +336,15 @@ namespace data::math {
             return i.abs();
         }
     };
+    
+    template <> struct divide<number::gmp::N, uint64> {
+        division<number::gmp::N, uint64> operator()(const number::gmp::N&, uint64) const;
+    };
+    
+    template <> struct divide<number::gmp::N, number::gmp::N> {
+        division<number::gmp::N> operator()(const number::gmp::N&, const number::gmp::N&) const;
+    };
+    
 }
 
 namespace data::encoding::hexidecimal { 

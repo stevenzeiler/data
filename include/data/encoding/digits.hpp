@@ -11,12 +11,12 @@
 namespace data::encoding {
     template <math::natural N>
     std::string write_base(const N& n, std::string digits) {
-        uint32 base = digits.size();
+        uint64 base = digits.size();
         if (base < 2) return "";
         tool::linked_stack<char> dig{};
         N x = n;
         while(x > 0) {
-            math::division<N> d = x.divide(base);
+            math::division<N, uint64> d = divide(x, math::nonzero{base});
             dig = dig << digits[(uint64)(d.Remainder)];
             x = d.Quotient;
         }

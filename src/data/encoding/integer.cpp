@@ -17,9 +17,9 @@ namespace data::encoding {
         
         ptr<bytes> read(string_view s, endian::order r) {
             if (!valid(s)) return nullptr;
-            math::number::N_bytes<endian::big> n{math::number::gmp::N{s}};
+            math::N_bytes_big n = math::N_bytes_big::read(s);
             if (r == endian::little) std::reverse(n.begin(), n.end());
-            return std::make_shared<bytes>(static_cast<bytes>(n));
+            return std::make_shared<bytes>(bytes_view(n));
         }
         
         N::N() : string{"0"} {}
@@ -134,6 +134,21 @@ namespace data::encoding {
     }
     
     namespace hexidecimal {
+        
+        std::ostream& write(std::ostream& o, bytes_view b, endian::order r, hex::letter_case q) {
+            o << "0x";
+            if (r == endian::order::big) for (int i = 0; i < b.size(); i++) o << hex::write(b[i], q);
+            else for(int i = b.size() - 1; i >= 0; i--) o << hex::write(b[i], q);
+            return o;
+        }
+        
+        ptr<bytes> read(string_view s, endian::order r) {
+            if (!valid(s)) return nullptr;
+            ptr<bytes> b = hex::read(s.substr(2));
+            if (b == nullptr || r == endian::big) return b;
+            std::reverse(b->begin(), b->end());
+            return b;
+        }
         
         N::N() : string{"0x00"} {}
         

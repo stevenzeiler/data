@@ -2,56 +2,39 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <data/data.hpp>
-#include <data/math/number/bytes/N.hpp>
-#include <data/math/number/bytes/Z.hpp>
+#include <data/math/number/bounded.hpp>
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 #include "gmock/gmock-matchers.h"
 #include <stdexcept>
 #include <iostream>
 
-namespace data {
-    
-    template<bool is_signed, data::endian::order o, size_t size> 
-    using bounded = data::math::number::bounded<is_signed, o, size>;
-    
-    template <size_t size> 
-    using integer_little = data::math::number::bounded<size, endian::little, true>;
-    
-    template <size_t size> 
-    using integer_big = data::math::number::bounded<size, endian::big, true>;
-    
-    template <size_t size> 
-    using uint_little = data::math::number::bounded<size, endian::little, false>;
-    
-    template <size_t size> 
-    using uint_big = data::math::number::bounded<size, endian::big, false>;
+namespace data::math {
     
     TEST(BoundedTest, BitNegate) {
         
-        EXPECT_EQ(~N_bytes<endian::big>{"0x00"}, N_bytes<endian::big>{"0xff"});
-        EXPECT_EQ(~N_bytes<endian::little>{"0x00"}, N_bytes<endian::little>{"0xff"});
-        EXPECT_EQ(~N_bytes<endian::big>{"0xff"}, N_bytes<endian::big>{"0x00"});
-        EXPECT_EQ(~N_bytes<endian::little>{"0xff"}, N_bytes<endian::little>{"0x00"});
-        EXPECT_EQ(~Z_bytes<endian::big>{"0x00"}, Z_bytes<endian::big>{"0xff"});
-        EXPECT_EQ(~Z_bytes<endian::little>{"0x00"}, Z_bytes<endian::little>{"0xff"});
-        EXPECT_EQ(~Z_bytes<endian::big>{"0xff"}, Z_bytes<endian::big>{"0x00"});
-        EXPECT_EQ(~Z_bytes<endian::little>{"0xff"}, Z_bytes<endian::little>{"0x00"});
+        EXPECT_EQ(~N_bytes_big{"0x00"}, N_bytes_big{"0xff"});
+        EXPECT_EQ(~N_bytes_little{"0x00"}, N_bytes_little{"0xff"});
+        EXPECT_EQ(~N_bytes_big{"0xff"}, N_bytes_big{"0x00"});
+        EXPECT_EQ(~N_bytes_little{"0xff"}, N_bytes_little{"0x00"});
+        EXPECT_EQ(~Z_bytes_big{"0x00"}, Z_bytes_big{"0xff"});
+        EXPECT_EQ(~Z_bytes_little{"0x00"}, Z_bytes_little{"0xff"});
+        EXPECT_EQ(~Z_bytes_big{"0xff"}, Z_bytes_big{"0x00"});
+        EXPECT_EQ(~Z_bytes_little{"0xff"}, Z_bytes_little{"0x00"});
         
     }
     
     TEST(BoundedTest, BitShift) {
         
-        using u12l = bounded<false, data::endian::little, 12>;
-        using u12b = bounded<false, data::endian::big, 12>;
-        using s12l = bounded<true, data::endian::little, 12>;
-        using s12b = bounded<true, data::endian::big, 12>;
+        using u12l = uint_little<12>;
+        using u12b = uint_big<12>;
+        using s12l = sint_little<12>;
+        using s12b = sint_big<12>;
         
-        using nl = data::math::number::N_bytes<data::endian::little>;
-        using nb = data::math::number::N_bytes<data::endian::big>;
-        using zl = data::math::number::Z_bytes<data::endian::little>;
-        using zb = data::math::number::Z_bytes<data::endian::big>;
+        using nl = N_bytes_little;
+        using nb = N_bytes_big;
+        using zl = Z_bytes_little;
+        using zb = Z_bytes_big;
         
         std::string     base_value{"0x100000000001000000000001"};
         std::string  shift_1_right{"0x080000000000800000000000"};

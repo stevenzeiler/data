@@ -7,6 +7,13 @@
 
 // test whether data structures satisfy the correct interfaces. 
 namespace data {
+    TEST(FunctionalInterfaceTest, TestIterableInterfaces) {
+        
+        is_iterable<cross<string>, string>();
+        is_iterable<cross<string, 2>, string>();
+        is_iterable<bytes, byte>();
+        is_iterable<bytestring<10>, byte>();
+    }
     
     TEST(ListsTest, TestOrderedListInterfaces) {
         

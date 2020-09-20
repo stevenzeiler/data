@@ -6,21 +6,18 @@
 #include <data/math/number/gmp/N.hpp>
 #include <data/math/number/bytes/N.hpp>
 #include <data/encoding/digits.hpp>
+#include <data/math/number/bounded.hpp>
 
 namespace data::encoding::base58 {
     
     string write(const bytes_view b) {
-        std::cout << "writing base 58 0: " << encoding::hex::write(b) << std::endl;
-        std::cout << "writing base 58 A: " << (string{"0x"} + static_cast<string>(encoding::hex::write(b))) << std::endl;
-        std::cout << "writing base 58 B: " << math::number::gmp::N(string{"0x"} + static_cast<string>(encoding::hex::write(b))) << std::endl;
-        return write<math::number::gmp::N>(math::number::gmp::N(string{"0x"} + static_cast<string>(encoding::hex::write(b))));
+        return write<math::N_bytes_big>(math::N_bytes_big::read(b));
     }
     
     view::view(string_view s) : string_view{s}, Bytes{}, ToBytes{nullptr} {
         if (base58::valid(s)) {
-            // TODO this is kind of inefficient since we convert to a number to a string to bytes. 
-            // this ought to be done more directly. 
-            Bytes = *hex::read(hexidecimal::write(read<math::number::gmp::N>(s)).substr(2));
+            auto n = math::N_bytes_big::read(s);
+            std::copy(n.begin(), n.end(), Bytes.begin());
             ToBytes = &Bytes;
         }
     }
@@ -31,7 +28,7 @@ namespace data::encoding::base58 {
         if (n == 0) return "1";
         return write_base<N>(n, Characters);
     }
-
+    
     string::string() : std::string{"1"} {}
         
     string::string(const std::string& x) : std::string{base58::valid(x) ? x : ""} {}
