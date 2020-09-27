@@ -55,11 +55,4 @@ namespace data {
     }
 }
 
-namespace data {
-    template <typename dividend, typename divisor = dividend> 
-    inline auto divide(const dividend& a, const math::nonzero<divisor>& b) -> decltype(math::divide<dividend, divisor>{}(a, b)) {
-        return math::divide<dividend, divisor>{}(a, b);
-    }
-}
-
 #endif

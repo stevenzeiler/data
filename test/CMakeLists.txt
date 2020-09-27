@@ -5,6 +5,11 @@ if(${CMAKE_VERSION} VERSION_LESS 3.12)
     cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
 endif()
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> 2629fb3... Alebraic structures
 macro(package_add_test TESTNAME)
     # create an exectuable in which the tests will be stored
     add_executable(${TESTNAME} ${ARGN})
@@ -50,6 +55,7 @@ package_add_test(testStringNumbers testStringNumbers.cpp)
 package_add_test(testExtendedEuclidian testExtendedEuclidian.cpp)
 package_add_test(testEratosthenes testEratosthenes.cpp)
 package_add_test(testFiniteField testFiniteField.cpp)
+package_add_test(testAlgebra testAlgebra.cpp)
 package_add_test(testPolynomial testPolynomial.cpp)
 package_add_test(testPermutation testPermutation.cpp)
 package_add_test(testCircularQueue testCircularQueue.cpp)
