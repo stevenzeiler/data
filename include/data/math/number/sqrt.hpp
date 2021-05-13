@@ -5,10 +5,6 @@
 #ifndef DATA_MATH_NUMBER_SQRT
 #define DATA_MATH_NUMBER_SQRT
 
-#include <data/types.hpp>
-#include <data/math/sign.hpp>
-#include <data/math/division.hpp>
-
 namespace data::math::number {
 
     template <typename G, typename Z> struct sqrt;

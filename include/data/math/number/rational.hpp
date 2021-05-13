@@ -5,7 +5,6 @@
 #ifndef DATA_MATH_NUMBER_RATIONAL
 #define DATA_MATH_NUMBER_RATIONAL
 
-#include <data/math/number/abs.hpp>
 #include <data/math/division.hpp>
 #include <data/math/number/extended_euclidian.hpp>
 #include <data/math/field.hpp>

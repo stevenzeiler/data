@@ -6,8 +6,6 @@
 #define DATA_MATH_CAYLEY_DICKSON
 
 #include <data/math/nonnegative.hpp>
-#include <data/math/commutative.hpp>
-#include <data/math/associative.hpp>
 #include <data/math/field.hpp>
 
 namespace data::math {
