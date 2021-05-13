@@ -9,8 +9,7 @@
 #include <data/math/number/modular.hpp>
 #include <data/math/field.hpp>
 #include <data/math/number/extended_euclidian.hpp>
-#include <data/math/commutative.hpp>
-#include <data/math/associative.hpp>
+#include <data/math/arithmetic.hpp>
 
 namespace data::math::algebra {
     

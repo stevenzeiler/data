@@ -5,7 +5,6 @@
 #ifndef DATA_MATH_NUMBER_RATIONAL
 #define DATA_MATH_NUMBER_RATIONAL
 
-#include <data/math/number/abs.hpp>
 #include <data/math/division.hpp>
 #include <data/math/number/extended_euclidian.hpp>
 #include <data/math/field.hpp>
@@ -13,7 +12,8 @@
 
 namespace data::math::number {
     template <typename Q>
-    struct rational : interface::field<Q, plus<Q>, times<Q>>, interface::ordered<Q> {};
+    requires field<Q, plus<Q>, times<Q>> && ordered<Q> 
+    struct rational {};
         
     template <typename N>
     struct positive {
@@ -45,7 +45,8 @@ namespace data::math::number {
     // TODO: note that N is the type of abs(Z)
     // I don't have a way of doing that yet. 
     template <typename Z, typename N>
-    struct fraction : interface::ring<Z, data::plus<Z>, data::times<Z>>, interface::ordered<Z> {
+    requires ring<Z, plus<Z>, times<Z>> && ordered<Z>
+    struct fraction {
         Z Numerator;
         positive<N> Denominator;
         
@@ -65,7 +66,7 @@ namespace data::math::number {
         static fraction divide(Z n, N d) {
             if (d == 0) return fraction{Z{0}, positive<N>{N{0}}}; // Invalid value. 
             if (n == 0) return fraction{Z{0}, positive<N>{N{1}}};
-            N gcd_ab = gcd(abs<N, Z>{}(n), d);
+            N gcd_ab = gcd(abs<Z>{}(n), d);
             return fraction(n / Z(gcd_ab), positive(d / gcd_ab));
         }
         
